@@ -17,5 +17,6 @@ public interface GestionMovimientoLocal {
 	
 	public List<Movimiento> getMovimientosPorNombre(int filtro);
 	
+	
 }
 	
