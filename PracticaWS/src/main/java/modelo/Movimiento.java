@@ -84,4 +84,5 @@ public class Movimiento implements Serializable {
 		return "Movimiento [id=" + id + ", fecha=" + fecha + ", origen=" + origen + ", destino=" + destino + "]";
 	}
 	
+	
 }
