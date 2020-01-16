@@ -35,6 +35,17 @@ public class Movimiento implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ws_dest_id")
 	private Cuenta destino;
+	
+	@Column(name = "ws_mov_monto")
+	private double monto;
+	
+	public double getMonto() {
+		return monto;
+	}
+
+	public void setMonto(double monto) {
+		this.monto = monto;
+	}
 
 	public int getId() {
 		return id;
