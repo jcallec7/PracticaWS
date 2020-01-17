@@ -28,14 +28,6 @@ public class Movimiento implements Serializable {
 	@Column(name = "ws_mov_fecha")
 	private Date fecha;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ws_ori_id")
-	private Cuenta origen;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ws_dest_id")
-	private Cuenta destino;
-	
 	@Column(name = "ws_mov_monto")
 	private double monto;
 	
@@ -61,28 +53,6 @@ public class Movimiento implements Serializable {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
-	}
+	}	
 
-	public Cuenta getOrigen() {
-		return origen;
-	}
-
-	public void setOrigen(Cuenta origen) {
-		this.origen = origen;
-	}
-
-	public Cuenta getDestino() {
-		return destino;
-	}
-
-	public void setDestino(Cuenta destino) {
-		this.destino = destino;
-	}
-
-	@Override
-	public String toString() {
-		return "Movimiento [id=" + id + ", fecha=" + fecha + ", origen=" + origen + ", destino=" + destino + "]";
-	}
-	
-	
 }

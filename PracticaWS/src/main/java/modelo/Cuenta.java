@@ -29,8 +29,8 @@ public class Cuenta {
 	private Double saldo;
 	
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-	@JoinColumn(name = "mc_cu_id")
-	private List<Movimiento> movimiento;
+	@JoinColumn(name = "ws_cu_id")
+	private List<Movimiento> movimientos;
 
 	public int getId() {
 		return id;
@@ -64,13 +64,12 @@ public class Cuenta {
 		this.saldo = saldo;
 	}
 
-	public List<Movimiento> getMovimiento() {
-		return movimiento;
+	public List<Movimiento> getMovimientos() {
+		return movimientos;
 	}
 
-	public void setMovimiento(List<Movimiento> movimiento) {
-		this.movimiento = movimiento;
+	public void setMovimientos(List<Movimiento> movimientos) {
+		this.movimientos = movimientos;
 	}
-	
-	
+
 }

@@ -1,5 +1,6 @@
 package datos;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,6 +49,7 @@ public class MovimientoDAO {
 	}
 
 	public List<Movimiento> getMovimientosPorCuenta(int filtro) {
+		
 		String jpql = "SELECT a FROM Movimiento a WHERE ws_cu_id = ?1";
 		Query q = em.createQuery(jpql, Movimiento.class);
 		q.setParameter(1, "%" + filtro + "%");
