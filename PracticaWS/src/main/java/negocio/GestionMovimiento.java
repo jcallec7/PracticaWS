@@ -63,9 +63,9 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 			m2.setFecha(new Date());
 			m1.setMonto(t.getMonto());
 			m2.setMonto(t.getMonto() * -1);
-			cuentaOrigen.getMovimientos().add(m1);
+			cuentaOrigen.getMovimientos().add(m2);
 			cuentaOrigen.setSaldo(cuentaOrigen.getSaldo() - t.getMonto());
-			cuentaDestino.getMovimientos().add(m2);
+			cuentaDestino.getMovimientos().add(m1);
 			cuentaDestino.setSaldo(cuentaDestino.getSaldo() + t.getMonto());
 			dao.insert(m1);
 			dao.insert(m2);
