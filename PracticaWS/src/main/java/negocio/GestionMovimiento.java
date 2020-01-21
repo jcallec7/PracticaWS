@@ -43,18 +43,20 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 			if(cuenta != null) {
 				r.setCodigo(10);
 				r.setMensaje("OK");
-				if(t.getMonto() < 0 && cuenta.getSaldo() >= t.getMonto()) {
+				if(t.getMonto() < 0 && cuenta.getSaldo() >= (t.getMonto() * -1)) {
 					m.setMonto(t.getMonto());
 					cuenta.getMovimientos().add(m);
 					cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
-					daoCuenta.update(cuenta);
 					dao.insert(m);
+					daoCuenta.update(cuenta);
+					r.setMensaje("OK" + " - Saldo Cuenta: " + cuenta.getSaldo());
 				} else if(t.getMonto() > 0) {
 					m.setMonto(t.getMonto());
 					cuenta.getMovimientos().add(m);
 					cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
+					dao.insert(m);
 					daoCuenta.update(cuenta);
-					dao.insert(m);				
+					r.setMensaje("OK" + " - Saldo Cuenta: " + cuenta.getSaldo());
 				} else {
 					r.setMensaje("No dispone de suficiente saldo para realizar el debito o no ha ingresado ningun valor.");
 				}
@@ -86,7 +88,7 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 			if(cuentaOrigen != null && cuentaDestino != null) {
 				
 				r.setCodigo(10);
-				r.setMensaje("OK");
+				
 				
 				if(cuentaOrigen.getSaldo() >= t.getMonto()) {
 					Movimiento m1 = new Movimiento();
@@ -103,6 +105,7 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 					dao.insert(m2);
 					daoCuenta.update(cuentaOrigen);
 					daoCuenta.update(cuentaDestino);
+					r.setMensaje("OK" + " - Saldo Cuenta Origen: " + cuentaOrigen.getSaldo() + " Saldo Cuenta Destino: " + cuentaDestino.getSaldo());
 				} else {
 					r.setMensaje("No dispone de suficiente saldo para realizar la transferencia");
 				} 
