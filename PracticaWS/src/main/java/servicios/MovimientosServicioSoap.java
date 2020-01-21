@@ -24,15 +24,13 @@ public class MovimientosServicioSoap {
 		
 		Respuesta respuesta = new Respuesta();
 		try {
-			gml.guardarMovimiento(t);
-			respuesta.setCodigo(1);
-			respuesta.setMensaje("AL PELOO");
+			respuesta = gml.guardarMovimiento(t);
 		
 			//gml.guardarTransferencia(t, t.getMonto());
 			
 		} catch(Exception e) {
 			respuesta.setCodigo(99);
-			respuesta.setMensaje("ERROR ALV");
+			respuesta.setMensaje("ERROR, no se ha podido realizar el movimiento");
 		}
 		
 		return respuesta;	
@@ -43,15 +41,13 @@ public class MovimientosServicioSoap {
 		
 		Respuesta respuesta = new Respuesta();
 		try {
-			gml.guardarTransferencia(t);
-			respuesta.setCodigo(1);
-			respuesta.setMensaje("AL PELOO");
+			respuesta = gml.guardarTransferencia(t);
 		
 			//gml.guardarTransferencia(t, t.getMonto());
 			
 		} catch(Exception e) {
 			respuesta.setCodigo(99);
-			respuesta.setMensaje("ERROR ALV");
+			respuesta.setMensaje("ERROR, no se ha podido realizar la transferencia");
 		}
 		
 		return respuesta;	
@@ -60,7 +56,8 @@ public class MovimientosServicioSoap {
 	@WebMethod
 	public List<Movimiento> listMovimientosPorId(int id) {
 		List<Movimiento> l = new ArrayList<Movimiento>();
-		l = gml.getMovimientosPorId(id);		
+		l = gml.getMovimientosPorId(id);
+		
 		return l;
 	}
 	

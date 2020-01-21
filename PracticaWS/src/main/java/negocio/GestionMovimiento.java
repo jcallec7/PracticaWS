@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import datos.MovimientoDAO;
 import datos.CuentaDAO;
 import modelo.Movimiento;
+import servicios.Respuesta;
 import utils.Transferencia;
 import modelo.Cuenta;
 
@@ -24,60 +25,103 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 
 	private List<Movimiento> movimientos = new ArrayList<Movimiento>();
 	
+	private Cuenta cuenta;
+	private Cuenta cuentaOrigen;
+	private Cuenta cuentaDestino;
+	
 
-	public void guardarMovimiento(Transferencia t) {
-
+	public Respuesta guardarMovimiento(Transferencia t) {
+		
+		Respuesta r = new Respuesta();
+		
 		Movimiento m = new Movimiento();
 		m.setFecha(new Date());
-		Cuenta cuenta = daoCuenta.read(t.getOrigenId());
 		
-		if(t.getMonto() < 0 && cuenta.getSaldo() >= t.getMonto()) {
-			m.setMonto(t.getMonto());
-			m.setMonto(t.getMonto());
-			cuenta.getMovimientos().add(m);
-			cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
-			dao.insert(m);
-			daoCuenta.update(cuenta);
-		} else if(t.getMonto() > 0) {
-			m.setMonto(t.getMonto());
-			m.setMonto(t.getMonto());
-			cuenta.getMovimientos().add(m);
-			cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
-			dao.insert(m);
-			daoCuenta.update(cuenta);
-		} else {
-			System.out.println("Error, no hay suficiente saldo o no se permite un monto de 0");
+		try {
+			cuenta = daoCuenta.read(t.getOrigenId());
+			
+			if(cuenta != null) {
+				r.setCodigo(10);
+				r.setMensaje("OK");
+				if(t.getMonto() < 0 && cuenta.getSaldo() >= t.getMonto()) {
+					m.setMonto(t.getMonto());
+					cuenta.getMovimientos().add(m);
+					cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
+					daoCuenta.update(cuenta);
+					dao.insert(m);
+				} else if(t.getMonto() > 0) {
+					m.setMonto(t.getMonto());
+					cuenta.getMovimientos().add(m);
+					cuenta.setSaldo(cuenta.getSaldo() + t.getMonto());
+					daoCuenta.update(cuenta);
+					dao.insert(m);				
+				} else {
+					r.setMensaje("No dispone de suficiente saldo para realizar el debito o no ha ingresado ningun valor.");
+				}
+			} else {
+				r.setCodigo(11);
+				r.setMensaje("El numero de cuenta esta mal escrito o no existe");
+			}
+				
+		} catch (Exception e) {
+			r.setCodigo(11);
+			r.setMensaje("El numero de cuenta esta mal escrito o no existe");
 		}
+		
+		
+		return r;
 		
 	}
 	
-	public void guardarTransferencia(Transferencia t) {
+	public Respuesta guardarTransferencia(Transferencia t) {
+
+		Respuesta r = new Respuesta();
 		
-		Cuenta cuentaOrigen = daoCuenta.read(t.getOrigenId());
-		Cuenta cuentaDestino = daoCuenta.read(t.getDestinoId());
 		
-		if(cuentaOrigen.getSaldo() >= t.getMonto()) {
-			Movimiento m1 = new Movimiento();
-			Movimiento m2 = new Movimiento();
-			m1.setFecha(new Date());
-			m2.setFecha(new Date());
-			m1.setMonto(t.getMonto());
-			m2.setMonto(t.getMonto() * -1);
-			cuentaOrigen.getMovimientos().add(m2);
-			cuentaOrigen.setSaldo(cuentaOrigen.getSaldo() - t.getMonto());
-			cuentaDestino.getMovimientos().add(m1);
-			cuentaDestino.setSaldo(cuentaDestino.getSaldo() + t.getMonto());
-			dao.insert(m1);
-			dao.insert(m2);
-			daoCuenta.update(cuentaOrigen);
-			daoCuenta.update(cuentaDestino);
-		} else {
-			System.out.println("No hay suficiente saldo");
+		try {
+			
+			cuentaOrigen = daoCuenta.read(t.getOrigenId());
+			cuentaDestino = daoCuenta.read(t.getDestinoId());
+			
+			if(cuentaOrigen != null && cuentaDestino != null) {
+				
+				r.setCodigo(10);
+				r.setMensaje("OK");
+				
+				if(cuentaOrigen.getSaldo() >= t.getMonto()) {
+					Movimiento m1 = new Movimiento();
+					Movimiento m2 = new Movimiento();
+					m1.setFecha(new Date());
+					m2.setFecha(new Date());
+					m1.setMonto(t.getMonto() * -1);
+					m2.setMonto(t.getMonto());
+					cuentaOrigen.getMovimientos().add(m1);
+					cuentaOrigen.setSaldo(cuentaOrigen.getSaldo() - t.getMonto());
+					cuentaDestino.getMovimientos().add(m2);
+					cuentaDestino.setSaldo(cuentaDestino.getSaldo() + t.getMonto());
+					dao.insert(m1);
+					dao.insert(m2);
+					daoCuenta.update(cuentaOrigen);
+					daoCuenta.update(cuentaDestino);
+				} else {
+					r.setMensaje("No dispone de suficiente saldo para realizar la transferencia");
+				} 
+				
+			} else {
+				r.setCodigo(11);
+				r.setMensaje("El numero de cuenta esta mal escrito o no existe");
+			}
+			
+			
+			
+		} catch (Exception e) {
+			r.setCodigo(11);
+			r.setMensaje("El numero de cuenta esta mal escrito o no existe");
 		}
 		
+		
+		return r;
 	}
-	
-	
 
 	public List<Movimiento> getMovimientos() {
 		System.out.println(movimientos);
@@ -86,8 +130,12 @@ public class GestionMovimiento implements GestionMovimientoRemote, GestionMovimi
 	}
 
 	public List<Movimiento> getMovimientosPorId(int filtro) {
-		Cuenta cuenta = daoCuenta.read(filtro);
-		return cuenta.getMovimientos();
+		try {
+			Cuenta cuenta = daoCuenta.read(filtro);
+			return cuenta.getMovimientos();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 }

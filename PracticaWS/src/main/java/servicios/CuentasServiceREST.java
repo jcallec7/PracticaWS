@@ -2,7 +2,6 @@ package servicios;
 
 import java.util.List;
 
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,6 +11,8 @@ import javax.ws.rs.Produces;
 
 import modelo.Cuenta;
 import negocio.GestionCuentaLocal;
+import negocio.GestionMovimientoLocal;
+import utils.Transferencia;
 
 @Path("/cuentas")
 public class CuentasServiceREST {
@@ -19,7 +20,11 @@ public class CuentasServiceREST {
 	@Inject
 	private GestionCuentaLocal gcl;
 	
+	@Inject
+	private GestionMovimientoLocal gml;
+	
 	@GET
+	@Path("/obtenerCuentas")
 	@Produces("application/json")
 	public List<Cuenta> getCuentas() {
 		List<Cuenta> listado = gcl.getCuentas();
@@ -27,6 +32,7 @@ public class CuentasServiceREST {
 	}
 	
 	@POST
+	@Path("/crearCuenta")
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Respuesta crearCuenta(Cuenta c) {
@@ -41,6 +47,22 @@ public class CuentasServiceREST {
 			r.setMensaje("Error "+e.getMessage());
 		}
 		return r;
+	}
+	
+	@POST
+	@Path("/crearTransferencia")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Respuesta transf(Transferencia t) {
+		return this.gml.guardarTransferencia(t);
+	}
+	
+	@POST
+	@Path("/crearMovimiento")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Respuesta mov(Transferencia t) {
+		return this.gml.guardarMovimiento(t);
 	}
 	
 }

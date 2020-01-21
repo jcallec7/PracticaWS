@@ -7,14 +7,15 @@ import javax.ejb.Local;
 
 import modelo.Cuenta;
 import modelo.Movimiento;
+import servicios.Respuesta;
 import utils.Transferencia;
 
 @Local
 public interface GestionMovimientoLocal {
 	
-	public void guardarMovimiento(Transferencia t);
+	public Respuesta guardarMovimiento(Transferencia t);
 	
-	public void guardarTransferencia(Transferencia t);
+	public Respuesta guardarTransferencia(Transferencia t);
 	
 	public List<Movimiento> getMovimientos();
 	
